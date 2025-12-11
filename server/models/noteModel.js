@@ -1,4 +1,4 @@
-const knex = require('../config/knexfile');
+const knex = require('../config/knex');
 
 // Get notes for a specific user
 const getNotesByUserId = async (userId) => {

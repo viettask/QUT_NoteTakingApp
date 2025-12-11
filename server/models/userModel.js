@@ -1,4 +1,4 @@
-const knex = require('../config/knexfile');  // Import knex configuration
+const knex = require('../config/knex');  // Import knex configuration
 
 // Register a new user
 const registerUser = async (username, password) => {
