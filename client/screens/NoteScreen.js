@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, FlatList } from 'react-native';
+import {
+    View, Text, Button, FlatList, ScrollView,TouchableOpacity,TextInput,StyleSheet,Alert,ActivityIndicator} from 'react-native';
 import axios from '../services/axios';  // Import Axios configuration
 
 const NotesScreen = () => {
   const [notes, setNotes] = useState([]);
+  const [expandedId, setExpandedId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newTitle, setNewTitle] = useState('');
+  const [newContent, setNewContent] = useState('');
 
   useEffect(() => {
     const fetchNotes = async () => {

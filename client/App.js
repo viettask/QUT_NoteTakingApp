@@ -20,7 +20,7 @@ const Tab = createBottomTabNavigator();
 function MainTabs() {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Default" component={NoteScreen} />
+      <Tab.Screen name="Notes" component={NoteScreen} />
       <Tab.Screen name="About" component={AboutScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>

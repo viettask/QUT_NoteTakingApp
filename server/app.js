@@ -6,8 +6,6 @@ var logger = require('morgan');
 const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 
-// const options = require("./config/knex.js");
-// const knex = require("knex")(options);
 
 const knex = require("./config/knex.js");
 
