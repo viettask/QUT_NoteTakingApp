@@ -1,30 +1,21 @@
-const knexLib = require('knex');
+require('dotenv').config({ path: './config/.env' });
+const knex = require('knex');
 
-// module.exports = {
-//   client: 'mysql2',  // Use mysql2 as the database client
-//   connection: {
-//     host: '127.0.0.1', // MySQL host
-//     port: 3306,        // port is separate
-//     user: 'root',      // MySQL user
-//     password: 'Rfd0cTht@',      // MySQL password
-//     database: 'note_taking_app', // Your database name
-//   },
-//   pool: {
-//     min: 0,
-//     max: 7,
-//   },
-// };
+console.log('DB_PASSWORD:', process.env.DB_PASSWORD);
 
-const knex = knexLib({
-  client: 'mysql2',  // Use mysql2 as the database client
+const db = knex({
+  client: 'mysql2',
   connection: {
-    host: '127.0.0.1', // MySQL host
-    port: 3306,        // port is separate
-    user: 'root',      // MySQL user
-    password: 'Rfd0cTht@',      // MySQL password
-    database: 'note_taking_app', // Your database name
+    host: process.env.DB_HOST || '127.0.0.1',
+    port: process.env.DB_PORT || 3306,
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME || 'note_taking_app',
   },
-  pool: { min: 0, max: 7 },
+  pool: {
+    min: 0,
+    max: 7,
+  },
 });
 
-module.exports = knex;
+module.exports = db;
