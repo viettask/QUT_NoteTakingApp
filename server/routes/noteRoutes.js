@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { getNotes, addNote, updateNote, deleteNote } = require('../controllers/noteController');  // Importing controller functions
+const { getNotes, addNewNote, updateNote, deleteNote } = require('../controllers/noteController');  // Importing controller functions
 
 // Route to get all notes for a user
 router.get('/', getNotes);
 
 // Route to create a new note
-router.post('/', addNote);
+router.post('/', addNewNote);
 
 // Route to update a note by ID
 router.put('/:id', updateNote);

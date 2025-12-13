@@ -5,7 +5,9 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
-
+const noteRoutes = require('./routes/noteRoutes');
+console.log('TYPE OF noteRoutes:', typeof noteRoutes);
+console.log('noteRoutes:', noteRoutes);
 
 const knex = require("./config/knex.js");
 
@@ -23,12 +25,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//Knex middleware to attach the db instance to req
 app.use((req, res, next) => {
-
 req.db = knex;
-
 next();
-
 });
 
 // Routes
@@ -36,7 +36,11 @@ app.get('/', (req, res) => {
   res.json({ message: 'Server is running' });
 });
 app.use('/auth', authRoutes);
+console.log('About to mount /notes route');
+app.use('/notes', noteRoutes);
+console.log('About to mount /notes route');
 
+// Test Knex connection
 app.get("/knex", function (req, res, next) {
 
 req.db

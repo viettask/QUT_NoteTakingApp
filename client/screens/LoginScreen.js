@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import axios from '../services/axios';  // Import Axios configuration
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginScreen({ navigation }) {
     const [username, setUsername] = useState('');
@@ -26,15 +27,20 @@ export default function LoginScreen({ navigation }) {
                 password: password.trim()
             });
             console.log('Login success:', response.data);
+
+            // Store user info
+            await AsyncStorage.setItem('userId', response.data.User.id.toString());
+            await AsyncStorage.setItem('username', response.data.User.username);
+
             Alert.alert('Success', 'Login successful!');
             // Navigate to main tab screen after successful login
             navigation.replace('Main');
         } catch (error) {
-                  console.log('Login error:', error);
-      console.log('Error response:', error.response?.data);
-      const message = error.response?.data?.Message || 'Login failed';  
-      setErrorMessage(message);
-      Alert.alert('Error', message);
+            console.log('Login error:', error);
+            console.log('Error response:', error.response?.data);
+            const message = error.response?.data?.Message || 'Login failed';
+            setErrorMessage(message);
+            Alert.alert('Error', message);
         }
     };
 

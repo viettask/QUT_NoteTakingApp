@@ -1,73 +1,160 @@
-const { getNotesByUserId, addNote, updateNote, deleteNote } = require('../models/noteModel'); // Importing note model functions
+const knex = require('../config/knex');
 
 // Get all notes for a user
 const getNotes = async (req, res) => {
-  const userId = req.userId; // Assuming you have JWT-based authentication and user ID is stored in req.userId
+    const userId = req.query.user_id;
 
-  try {
-    // Fetch the notes for the logged-in user from the database
-    const notes = await getNotesByUserId(userId);
-    res.status(200).json(notes);  // Send the notes as a JSON response
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching notes', error: error.message });
-  }
+    try {
+        let query = req.db.from('notes').select('*').orderBy('created_at', 'desc');
+
+        // Filter by user if provided
+        if (userId) {
+            query = query.where('user_id', userId);
+        }
+
+        const notes = await query;
+        console.log('Notes found:', notes.length);
+        // Even if empty, return success with empty array
+        res.json({
+            Error: false,
+            Message: 'Success',
+            notes: notes  // Will be [] if no notes found
+        });
+    } catch (err) {
+        console.error('Error fetching notes:', err);
+        res.status(500).json({
+            Error: true,
+            Message: 'Error fetching notes'
+        });
+    }
 };
 
 // Add a new note
 const addNewNote = async (req, res) => {
-  const userId = req.userId;
-  const { title, content } = req.body;
+    const { title, content, user_id } = req.body;
 
-  try {
-    // Insert a new note into the database
-    const newNote = await addNote(userId, title, content);
+    if (!title || !content) {
+        return res.status(400).json({
+            Error: true,
+            Message: 'Title and content are required'
+        });
+    }
 
-    // Send the newly created note back as a response
-    res.status(201).json(newNote);
-  } catch (error) {
-    res.status(500).json({ message: 'Error adding note', error: error.message });
-  }
+    try {
+        const [noteId] = await req.db('notes').insert({
+            title: title,
+            content: content,
+            user_id: user_id,
+            created_at: new Date(),
+            updated_at: new Date()
+        });
+
+        // Get the newly created note
+        const newNote = await req.db('notes')
+            .where('id', noteId)
+            .first();
+
+        res.status(201).json({
+            Error: false,
+            Message: 'Note created successfully',
+            note: newNote
+        });
+    } catch (err) {
+        console.error('Error creating note:', err);
+        res.status(500).json({
+            Error: true,
+            Message: 'Failed to create note'
+        });
+    }
 };
 
 // Update an existing note
-const updateExistingNote = async (req, res) => {
-  const userId = req.userId;
-  const noteId = req.params.id;  // Get the note ID from the URL
-  const { title, content } = req.body;
+const updateNote = async (req, res) => {
+    const { id } = req.params;
+    const { title, content } = req.body;
 
-  try {
-    // Update the note in the database
-    const updatedNote = await updateNote(noteId, userId, title, content);
-
-    // Check if the note was updated
-    if (!updatedNote) {
-      return res.status(404).json({ message: 'Note not found or unauthorized' });
+    // Validation
+    if (!title || !content) {
+        return res.status(400).json({
+            Error: true,
+            Message: 'Title and content are required'
+        });
     }
 
-    res.status(200).json(updatedNote);  // Send back the updated note
-  } catch (error) {
-    res.status(500).json({ message: 'Error updating note', error: error.message });
-  }
+    try {
+        // Check if note exists
+        const note = await req.db('notes')
+            .where('id', id)
+            .first();
+
+        if (!note) {
+            return res.status(404).json({
+                Error: true,
+                Message: 'Note not found'
+            });
+        }
+
+        // Update the note
+        await req.db('notes')
+            .where('id', id)
+            .update({
+                title: title,
+                content: content,
+                updated_at: new Date()
+            });
+
+        // Get the updated note
+        const updatedNote = await req.db('notes')
+            .where('id', id)
+            .first();
+
+        res.json({
+            Error: false,
+            Message: 'Note updated successfully',
+            note: updatedNote
+        });
+    } catch (error) {
+        console.error('Error updating note:', error);
+        res.status(500).json({
+            Error: true,
+            Message: 'Error updating note'
+        });
+    }
 };
 
 // Delete a note
-const deleteExistingNote = async (req, res) => {
-  const userId = req.userId;
-  const noteId = req.params.id;  // Get the note ID from the URL
+const deleteNote = async (req, res) => {
+    const { id } = req.params;
 
-  try {
-    // Delete the note from the database
-    const result = await deleteNote(noteId, userId);
+    try {
+        // Check if note exists
+        const note = await req.db('notes')
+            .where('id', id)
+            .first();
 
-    // Check if the note was deleted
-    if (!result) {
-      return res.status(404).json({ message: 'Note not found or unauthorized' });
+        if (!note) {
+            return res.status(404).json({
+                Error: true,
+                Message: 'Note not found'
+            });
+        }
+
+        // Delete the note
+        await req.db('notes')
+            .where('id', id)
+            .del();
+
+        res.json({
+            Error: false,
+            Message: 'Note deleted successfully'
+        });
+    } catch (error) {
+        console.error('Error deleting note:', error);
+        res.status(500).json({
+            Error: true,
+            Message: 'Error deleting note'
+        });
     }
-
-    res.status(200).json({ message: 'Note deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ message: 'Error deleting note', error: error.message });
-  }
 };
 
-module.exports = { getNotes, addNewNote, updateExistingNote, deleteExistingNote };
+module.exports = { getNotes, addNewNote, updateNote, deleteNote };
