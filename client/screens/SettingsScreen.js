@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert , ScrollView} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
 
 export default function SettingsScreen({ navigation }) {
 
@@ -48,56 +48,56 @@ export default function SettingsScreen({ navigation }) {
 
     return (
         <View style={styles.container}>
-        <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 20 }} showsVerticalScrollIndicator={true}>
-            <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Account</Text>
+            <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 20 }} showsVerticalScrollIndicator={true}>
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Account</Text>
 
-                <TouchableOpacity style={styles.option}>
-                    <Text style={styles.optionText}>Change Password</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity style={styles.option}>
+                        <Text style={styles.optionText}>Change Password</Text>
+                    </TouchableOpacity>
 
-                <TouchableOpacity style={styles.option}>
-                    <Text style={styles.optionText}>Edit Profile</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity style={styles.option}>
+                        <Text style={styles.optionText}>Edit Profile</Text>
+                    </TouchableOpacity>
 
-                <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-                    <Text style={styles.logoutButtonText}>Logout</Text>
-                </TouchableOpacity>
-            </View>
+                    <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+                        <Text style={styles.logoutButtonText}>Logout</Text>
+                    </TouchableOpacity>
+                </View>
 
-            <View style={styles.section}>
-                <Text style={styles.sectionTitle}>App Settings</Text>
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>App Settings</Text>
 
-                <TouchableOpacity style={styles.option}>
-                    <Text style={styles.optionText}>Notifications</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity style={styles.option}>
+                        <Text style={styles.optionText}>Notifications</Text>
+                    </TouchableOpacity>
 
-                <TouchableOpacity style={styles.option}>
-                    <Text style={styles.optionText}>Privacy</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity style={styles.option}>
+                        <Text style={styles.optionText}>Privacy</Text>
+                    </TouchableOpacity>
 
-                <TouchableOpacity style={styles.option} onPress={handleClearData}>
-                    <Text style={[styles.optionText, styles.dangerText]}>Clear Data</Text>
-                </TouchableOpacity>
-            </View>
+                    <TouchableOpacity style={styles.option} onPress={handleClearData}>
+                        <Text style={[styles.optionText, styles.dangerText]}>Clear Data</Text>
+                    </TouchableOpacity>
+                </View>
 
-            <View style={styles.section}>
-                <Text style={styles.sectionTitle}>About</Text>
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>About</Text>
 
-                <TouchableOpacity style={styles.option}>
-                    <Text style={styles.optionText}>Version 1.0.0</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity style={styles.option}>
+                        <Text style={styles.optionText}>Version 1.0.0</Text>
+                    </TouchableOpacity>
 
-                <TouchableOpacity style={styles.option}>
-                    <Text style={styles.optionText}>Terms of Service</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity style={styles.option}>
+                        <Text style={styles.optionText}>Terms of Service</Text>
+                    </TouchableOpacity>
 
-                <TouchableOpacity style={styles.option}>
-                    <Text style={styles.optionText}>Privacy Policy</Text>
-                </TouchableOpacity>
-            </View>
+                    <TouchableOpacity style={styles.option}>
+                        <Text style={styles.optionText}>Privacy Policy</Text>
+                    </TouchableOpacity>
+                </View>
 
-        </ScrollView>
+            </ScrollView>
         </View>
     );
 }
