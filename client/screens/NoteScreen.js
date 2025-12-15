@@ -13,6 +13,7 @@ const NotesScreen = () => {
     const [newTitle, setNewTitle] = useState('');
     const [newContent, setNewContent] = useState('');
     const [userId, setUserId] = useState(null);
+    const [username, setUsername] = useState('');
     const [editingId, setEditingId] = useState(null);
     const [editTitle, setEditTitle] = useState('');
     const [editContent, setEditContent] = useState('');
@@ -25,10 +26,14 @@ const NotesScreen = () => {
     const loadUserAndFetchNotes = async () => {
         try {
             const storedUserId = await AsyncStorage.getItem('userId');
+            const storedUsername = await AsyncStorage.getItem('username');
+
             console.log('Stored User ID:', storedUserId);
+            console.log('Stored Username:', storedUsername);
 
             if (storedUserId) {
                 setUserId(storedUserId);
+                setUsername(storedUsername || 'User');
                 fetchNotes(storedUserId);
             } else {
                 Alert.alert('Error', 'User not logged in');
@@ -175,7 +180,10 @@ const NotesScreen = () => {
         <View style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
-                <Text style={styles.headerTitle}>My Notes</Text>
+                <Text style={styles.headerTitle}>  {username
+                    ? `${username.charAt(0).toUpperCase() + username.slice(1)}'s Notes`
+                    : 'My Notes'
+                }</Text>
                 <TouchableOpacity
                     style={styles.addButton}
                     onPress={() => setShowAddForm(!showAddForm)}

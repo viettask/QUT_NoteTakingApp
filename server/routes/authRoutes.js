@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const router = express.Router();
-const { register, login } = require('../controllers/authController');  // Importing controller functions
+//const { register, login } = require('../controllers/authController');  // Importing controller functions
 
 /* POST register new user */
 router.post("/register", async function (req, res, next) {
@@ -120,6 +120,114 @@ router.post("/login", async function (req, res, next) {
     res.status(500).json({ 
       Error: true, 
       Message: "Error in MySQL query" 
+    });
+  }
+});
+
+/* PUT update username */
+router.put('/update-username/:id', async (req, res) => {
+  const { id } = req.params;
+  console.log("Updating user ID:", id);  // Check if ID is correct
+  const { username } = req.body;
+  console.log("New username:", username);  // Ensure username is passed properly
+
+
+  if (!username) {
+    return res.status(400).json({
+      Error: true,
+      Message: 'Username is required'
+    });
+  }
+
+  try {
+    // Check if username already exists
+    const existingUser = await req.db('users')
+      .where('username', username)
+      .whereNot('id', id)
+      .first();
+
+    console.log("Existing user:", existingUser);
+
+
+    if (existingUser) {
+      return res.status(409).json({
+        Error: true,
+        Message: 'Username already taken'
+      });
+    }
+
+    // Update username
+    await req.db('users')
+      .where('id', id)
+      .update({ username: username });
+
+    res.json({
+      Error: false,
+      Message: 'Username updated successfully'
+    });
+  } catch (error) {
+    console.error('Error updating username:', error.Message);
+    res.status(500).json({
+      Error: true,
+      Message: 'Failed to update username',
+      Details: error.message
+    });
+  }
+});
+
+/* PUT update password */
+router.put('/update-password/:id', async (req, res) => {
+  const { id } = req.params;
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+    return res.status(400).json({
+      Error: true,
+      Message: 'Current password and new password are required'
+    });
+  }
+
+  try {
+    // Get user
+    const user = await req.db('users')
+      .where('id', id)
+      .first();
+
+    if (!user) {
+      return res.status(404).json({
+        Error: true,
+        Message: 'User not found'
+      });
+    }
+
+    // Verify current password
+    const match = await bcrypt.compare(currentPassword, user.password);
+
+    if (!match) {
+      return res.status(401).json({
+        Error: true,
+        Message: 'Current password is incorrect'
+      });
+    }
+
+    // Hash new password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    // Update password
+    await req.db('users')
+      .where('id', id)
+      .update({ password: hashedPassword });
+
+    res.json({
+      Error: false,
+      Message: 'Password updated successfully'
+    });
+  } catch (error) {
+    console.error('Error updating password:', error);
+    res.status(500).json({
+      Error: true,
+      Message: 'Failed to update password'
     });
   }
 });
