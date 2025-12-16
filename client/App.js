@@ -1,9 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import * as SplashScreen from 'expo-splash-screen';
 
 // Import screens
 import LoginScreen from './screens/LoginScreen';
@@ -15,6 +16,8 @@ import SettingsScreen from './screens/SettingsScreen';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
+// Keep the splash screen visible while we fetch resources
+SplashScreen.preventAutoHideAsync();
 
 // Bottom tabs after login
 function MainTabs() {
@@ -58,6 +61,43 @@ function MainTabs() {
 }
 
 export default function App() {
+  const [appIsReady, setAppIsReady] = useState(false);
+
+  useEffect(() => {
+    async function prepare() {
+      try {
+        // Keep splash screen visible for 5 seconds
+        await new Promise(resolve => setTimeout(resolve, 5000));
+
+        // You can also load resources here
+        // await loadFonts();
+        // await loadData();
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        // Tell the application to render
+        setAppIsReady(true);
+      }
+    }
+
+    prepare();
+  }, []);
+
+  useEffect(() => {
+    async function hideSplash() {
+      if (appIsReady) {
+        // Hide the splash screen
+        await SplashScreen.hideAsync();
+      }
+    }
+
+    hideSplash();
+  }, [appIsReady]);
+
+  if (!appIsReady) {
+    return null; // Show nothing while splash screen is visible
+  }
+
   return (
     <NavigationContainer >
       <Stack.Navigator screenOptions={{ headerShown: false }}>

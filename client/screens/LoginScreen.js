@@ -46,7 +46,7 @@ export default function LoginScreen({ navigation }) {
 
     return (
         <View style={{ flex: 1, justifyContent: 'center', padding: 20 }}>
-            <Text style={{ fontSize: 24, marginBottom: 20 }}>Login</Text>
+            <Text style={{ fontSize: 24, marginBottom: 20, textAlign: 'center', color: '#007AFF', fontWeight: '600' }}>Welcome to Note Taking App</Text>
 
             {errorMessage ? <Text style={{ color: 'red' }}>{errorMessage}</Text> : null}
 
@@ -66,8 +66,57 @@ export default function LoginScreen({ navigation }) {
                 autoCapitalize="none"
                 style={{ borderWidth: 1, marginBottom: 20, padding: 8 }}
             />
-            <Button title="Login" onPress={handleLogin} />
-            <Button title="Go to Register" onPress={() => navigation.navigate('Register')} />
+            {/* Login Button */}
+            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+                <Text style={styles.buttonText}>Login</Text>
+            </TouchableOpacity>
+
+            {/* Gap between buttons */}
+            <View style={styles.gap}></View>
+
+            {/* Go to Register Button */}
+            <Text>Don't have an account?</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+                <Text style={styles.registerLink}> Register</Text>
+            </TouchableOpacity>
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        padding: 20,
+    },
+    title: {
+        fontSize: 24,
+        marginBottom: 20,
+        textAlign: 'center',
+        color: '#007AFF',
+        fontWeight: '600',
+    },
+    error: {
+        color: 'red',
+        marginBottom: 10,
+    },
+    input: {
+        borderWidth: 1,
+        marginBottom: 10,
+        padding: 8,
+    },
+    loginButton: {
+        marginBottom: 10,  // Add margin below the Login button
+        backgroundColor: '#007AFF',
+        padding: 15,
+        borderRadius: 6,
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: 'white',  // Text color
+        fontSize: 18,
+    },
+    gap: {
+        height: 10,  // Adjust the height to create a gap between buttons
+    }
+});

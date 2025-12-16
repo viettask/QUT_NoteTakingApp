@@ -306,58 +306,6 @@ export default function SettingsScreen({ navigation }) {
     );
 }
 
-// const styles = StyleSheet.create({  
-//     container: {
-//         flex: 1,
-//         backgroundColor: '#f5f5f5',
-//         padding: 20,
-//     },
-//     title: {
-//         fontSize: 28,
-//         fontWeight: 'bold',
-//         marginBottom: 30,
-//         marginTop: 20,
-//     },
-//     section: {
-//         backgroundColor: '#fff',
-//         borderRadius: 10,
-//         padding: 15,
-//         marginBottom: 20,
-//     },
-//     sectionTitle: {
-//         fontSize: 16,
-//         fontWeight: '600',
-//         color: '#666',
-//         marginBottom: 10,
-//         textTransform: 'uppercase',
-//     },
-//     option: {
-//         paddingVertical: 15,
-//         borderBottomWidth: 1,
-//         borderBottomColor: '#f0f0f0',
-//     },
-//     optionText: {
-//         fontSize: 16,
-//         color: '#333',
-//     },
-//     dangerText: {
-//         color: '#ff3b30',
-//     },
-//     logoutButton: {
-//         backgroundColor: '#007AFF',
-//         padding: 15,
-//         borderRadius: 10,
-//         alignItems: 'center',
-//         marginTop: 20,
-//     },
-//     logoutButtonText: {
-//         color: '#fff',
-//         fontSize: 18,
-//         fontWeight: 'bold',
-//     },
-// });
-
-
 
 const styles = StyleSheet.create({
     container: {
@@ -418,7 +366,7 @@ const styles = StyleSheet.create({
     logoutButton: {
         backgroundColor: '#007AFF',
         padding: 15,
-        borderRadius: 10,
+        borderRadius: 6,
         alignItems: 'center',
         marginTop: 20,
     },
