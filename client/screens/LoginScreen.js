@@ -45,17 +45,18 @@ export default function LoginScreen({ navigation }) {
     };
 
     return (
-        <View style={{ flex: 1, justifyContent: 'center', padding: 20 }}>
-            <Text style={{ fontSize: 24, marginBottom: 20, textAlign: 'center', color: '#007AFF', fontWeight: '600' }}>Welcome to Note Taking App</Text>
+        <View style={styles.container}>
+            <Text style={styles.title}>Welcome to Note Taking App</Text>
+            <Text style={styles.titleMessage}>Please enter your details</Text>
 
-            {errorMessage ? <Text style={{ color: 'red' }}>{errorMessage}</Text> : null}
+            {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
 
             <TextInput
                 placeholder="Username"
                 value={username}
                 onChangeText={setUsername}
                 autoCapitalize="none"
-                style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
+                style={styles.input}
             />
 
             <TextInput
@@ -64,7 +65,7 @@ export default function LoginScreen({ navigation }) {
                 onChangeText={setPassword}
                 secureTextEntry
                 autoCapitalize="none"
-                style={{ borderWidth: 1, marginBottom: 20, padding: 8 }}
+                style={styles.input}
             />
             {/* Login Button */}
             <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
@@ -75,9 +76,11 @@ export default function LoginScreen({ navigation }) {
             <View style={styles.gap}></View>
 
             {/* Go to Register Button */}
-            <Text>Don't have an account?</Text>
+
             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-                <Text style={styles.registerLink}> Register</Text>
+                <Text style={styles.registerText}>
+                    Don't have an account? <Text style={styles.registerLink}>Register</Text>
+                </Text>
             </TouchableOpacity>
         </View>
     );
@@ -118,5 +121,22 @@ const styles = StyleSheet.create({
     },
     gap: {
         height: 10,  // Adjust the height to create a gap between buttons
+    },
+    registerText: {
+        textAlign: 'center',
+        fontSize: 16,
+    },
+    registerLink: {
+        color: '#007AFF', // Register link color
+    },
+    titleMessage:{
+        fontSize: 16,
+        marginBottom: 20
+    },
+    input: { 
+        borderWidth: 1,
+        marginBottom: 10, 
+        padding: 8 , 
+        borderRadius: 6
     }
 });

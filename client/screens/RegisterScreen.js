@@ -45,9 +45,10 @@ export default function RegisterScreen({ navigation }) {
     };
 
     return (
-        <View style={{ flex: 1, justifyContent: 'center', padding: 20 }}>
-            <Text style={{ fontSize: 24, marginBottom: 20 }}>Register</Text>
-            {errorMessage ? <Text style={{ color: 'red' }}>{errorMessage}</Text> : null}
+        <View style={styles.container}>
+            <Text style={styles.title}>Create Account</Text>
+            <Text style={styles.titleMessage}>Register your account to explore Note Taking App features</Text>
+            {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
 
             <TextInput
                 placeholder="Username"
@@ -56,7 +57,7 @@ export default function RegisterScreen({ navigation }) {
                     console.log('Username changed:', text); // Add this
                     setUsername(text);
                 }}
-                style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
+                style={styles.input}
             />
             <TextInput
                 placeholder="Password"
@@ -66,10 +67,81 @@ export default function RegisterScreen({ navigation }) {
                     setPassword(text);
                 }}
                 secureTextEntry
-                style={{ borderWidth: 1, marginBottom: 20, padding: 8 }}
+                style={styles.input}
             />
-            <Button title="Register" onPress={handleRegister} />
-            <Button title="Go to Login" onPress={() => navigation.navigate('Login')} />
+            {/* <Button title="Register" onPress={handleRegister} />
+            <Button title="Go to Login" onPress={() => navigation.navigate('Login')} /> */}
+
+            {/* Login Button */}
+            <TouchableOpacity style={styles.loginButton} onPress={handleRegister}>
+                <Text style={styles.buttonText}>Register</Text>
+            </TouchableOpacity>
+
+            {/* Gap between buttons */}
+            <View style={styles.gap}></View>
+
+            {/* Go to Register Button */}
+
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                <Text style={styles.registerText}>
+                    Already have an account? <Text style={styles.registerLink}>Log in</Text>
+                </Text>
+            </TouchableOpacity>
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        padding: 20,
+    },
+    title: {
+        fontSize: 24,
+        marginBottom: 20,
+        textAlign: 'center',
+        color: '#007AFF',
+        fontWeight: '600',
+    },
+    error: {
+        color: 'red',
+        marginBottom: 10,
+    },
+    input: {
+        borderWidth: 1,
+        marginBottom: 10,
+        padding: 8,
+    },
+    loginButton: {
+        marginBottom: 10,  // Add margin below the Login button
+        backgroundColor: '#007AFF',
+        padding: 15,
+        borderRadius: 6,
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: 'white',  // Text color
+        fontSize: 18,
+    },
+    gap: {
+        height: 10,  // Adjust the height to create a gap between buttons
+    },
+    registerText: {
+        textAlign: 'center',
+        fontSize: 16,
+    },
+    registerLink: {
+        color: '#007AFF', // Register link color
+    },
+    titleMessage: {
+        fontSize: 16,
+        marginBottom: 20
+    },
+    input: {
+        borderWidth: 1,
+        marginBottom: 10,
+        padding: 8,
+        borderRadius: 6
+    }
+});
