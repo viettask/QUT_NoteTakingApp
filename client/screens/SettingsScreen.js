@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, ScrollView, TextInput, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, ScrollView, TextInput, Modal, Switch } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from '../services/axios';
 
@@ -17,8 +17,16 @@ export default function SettingsScreen({ navigation }) {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
+    // Notification settings
+    const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+
+    // Font Size State
+    const [fontSize, setFontSize] = useState('small');
+
     useEffect(() => {
         loadUserData();
+        loadNotificationSettings();
+        loadFontSize();
     }, []);
 
     const loadUserData = async () => {
@@ -29,6 +37,52 @@ export default function SettingsScreen({ navigation }) {
             setUserId(storedUserId);
         } catch (error) {
             console.error('Error loading user data:', error);
+        }
+    };
+
+    const loadNotificationSettings = async () => {
+        try {
+            const notifEnabled = await AsyncStorage.getItem('notificationsEnabled');
+            setNotificationsEnabled(notifEnabled === 'true');
+        } catch (error) {
+            console.error('Error loading notification settings:', error);
+        }
+    };
+
+    const toggleNotifications = async (value) => {
+        try {
+            setNotificationsEnabled(value);
+            await AsyncStorage.setItem('notificationsEnabled', value.toString());
+
+            if (value) {
+                Alert.alert('Notifications Enabled', 'You will now receive notifications');
+            } else {
+                Alert.alert('Notifications Disabled', 'You will not receive notifications');
+            }
+        } catch (error) {
+            console.error('Error saving notification settings:', error);
+        }
+    };
+
+    const loadFontSize = async () => {
+        try {
+            const storedFontSize = await AsyncStorage.getItem('fontSize');
+            if (storedFontSize) {
+                setFontSize(storedFontSize);
+            }
+        } catch (error) {
+            console.error('Error loading font size:', error);
+        }
+    };
+
+    const toggleFontSize = async (value) => {
+        try {
+            setFontSize(value);
+            await AsyncStorage.setItem('fontSize', value);
+
+            Alert.alert('Font Size Changed', `The font size is now set to ${value}`);
+        } catch (error) {
+            console.error('Error saving font size:', error);
         }
     };
 
@@ -168,13 +222,34 @@ export default function SettingsScreen({ navigation }) {
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>App Settings</Text>
 
-                    <TouchableOpacity style={styles.option}>
-                        <Text style={styles.optionText}>Notifications</Text>
-                    </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.option}>
-                        <Text style={styles.optionText}>Privacy</Text>
-                    </TouchableOpacity>
+                    {/* Notification Toggle */}
+                    <View style={styles.optionWithSwitch}>
+                        <View style={styles.optionTextContainer}>
+                            <Text style={styles.optionText}>Notifications</Text>
+                        </View>
+                        <Switch
+                            trackColor={{ false: '#767577', true: '#81b0ff' }}
+                            thumbColor={notificationsEnabled ? '#007AFF' : '#f4f3f4'}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={toggleNotifications}
+                            value={notificationsEnabled}
+                        />
+                    </View>
+
+                    {/* Font Size Toggle */}
+                    <View style={styles.optionWithSwitch}>
+                        <View style={styles.optionTextContainer}>
+                            <Text style={styles.optionText}>Font Size</Text>
+                        </View>
+                        <Switch
+                            trackColor={{ false: '#767577', true: '#81b0ff' }}
+                            thumbColor={fontSize === 'big' ? '#007AFF' : '#f4f3f4'}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={() => toggleFontSize(fontSize === 'small' ? 'big' : 'small')}
+                            value={fontSize === 'big'}
+                        />
+                    </View>
 
                     <TouchableOpacity style={styles.option} onPress={handleClearData}>
                         <Text style={[styles.optionText, styles.dangerText]}>Clear Data</Text>
@@ -212,7 +287,7 @@ export default function SettingsScreen({ navigation }) {
                     <View style={styles.modalContent}>
                         <Text style={styles.modalTitle}>Change Username</Text>
                         <Text style={styles.modalSubtitle}>Current: {username}</Text>
-                        
+
                         <TextInput
                             style={styles.input}
                             placeholder="New username"
@@ -252,7 +327,7 @@ export default function SettingsScreen({ navigation }) {
                 <View style={styles.modalOverlay}>
                     <View style={styles.modalContent}>
                         <Text style={styles.modalTitle}>Change Password</Text>
-                        
+
                         <TextInput
                             style={styles.input}
                             placeholder="Current password"
@@ -314,10 +389,15 @@ const styles = StyleSheet.create({
     },
     profileSection: {
         backgroundColor: '#fff',
-        borderRadius: 10,
-        padding: 20,
         alignItems: 'center',
-        marginBottom: 20,
+        padding: 15,
+        borderRadius: 6,
+        marginBottom: 15,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+        elevation: 2,
     },
     avatar: {
         width: 80,
@@ -340,9 +420,14 @@ const styles = StyleSheet.create({
     },
     section: {
         backgroundColor: '#fff',
-        borderRadius: 10,
         padding: 15,
-        marginBottom: 20,
+        borderRadius: 6,
+        marginBottom: 15,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+        elevation: 2,
     },
     sectionTitle: {
         fontSize: 16,
@@ -354,7 +439,7 @@ const styles = StyleSheet.create({
     option: {
         paddingVertical: 15,
         borderBottomWidth: 1,
-        borderBottomColor: '#f0f0f0',
+        borderBottomColor: '#f0f0f0'
     },
     optionText: {
         fontSize: 16,
@@ -428,5 +513,15 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
         fontWeight: 'bold',
+    },
+    optionWithSwitch: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: '#f0f0f0',
+    },
+    optionTextContainer: {
+        flex: 1,
     },
 });

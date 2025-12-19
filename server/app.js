@@ -27,8 +27,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //Knex middleware to attach the db instance to req
 app.use((req, res, next) => {
-req.db = knex;
-next();
+  req.db = knex;
+  next();
 });
 
 // Routes
@@ -43,21 +43,21 @@ console.log('About to mount /notes route');
 // Test Knex connection
 app.get("/knex", function (req, res, next) {
 
-req.db
+  req.db
 
-.raw("SELECT VERSION()")
+    .raw("SELECT VERSION()")
 
-.then((version) => console.log(version[0][0]))
+    .then((version) => console.log(version[0][0]))
 
-.catch((err) => {
+    .catch((err) => {
 
-console.log(err);
+      console.log(err);
 
-throw err;
+      throw err;
 
-});
+    });
 
-res.send("Version Logged successfully");
+  res.send("Version Logged successfully");
 
 });
 
@@ -65,14 +65,14 @@ res.send("Version Logged successfully");
 
 app.use(function (req, res, next) {
 
-next(createError(404));
+  next(createError(404));
 
 });
 
 
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -80,10 +80,10 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error', {
-  title: 'Error',
-  message: err.message,
-  error: err
-});
+    title: 'Error',
+    message: err.message,
+    error: err
+  });
 });
 
 

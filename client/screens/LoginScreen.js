@@ -129,14 +129,14 @@ const styles = StyleSheet.create({
     registerLink: {
         color: '#007AFF', // Register link color
     },
-    titleMessage:{
+    titleMessage: {
         fontSize: 16,
         marginBottom: 20
     },
-    input: { 
+    input: {
         borderWidth: 1,
-        marginBottom: 10, 
-        padding: 8 , 
+        marginBottom: 10,
+        padding: 8,
         borderRadius: 6
     }
 });

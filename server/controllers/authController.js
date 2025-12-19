@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const register =  async (req, res, next) => {
   const { username, password } = req.body;
 
-  console.log("Received:", { username, password }); // Add this
+  console.log("Received:", { username, password }); 
 
   // Validation
   if (!username || !password) {
@@ -18,7 +18,7 @@ const register =  async (req, res, next) => {
 
   try {
 
-    console.log("Checking if user exists..."); // Add this
+    console.log("Checking if user exists..."); 
 
     // Check if user already exists
     const existingUser = await req.db
@@ -27,7 +27,7 @@ const register =  async (req, res, next) => {
       .where("username", "=", username)
       .first();
 
-    console.log("Existing user:", existingUser); // Add this
+    console.log("Existing user:", existingUser); 
 
     if (existingUser) {
       return res.status(409).json({ 
@@ -36,21 +36,20 @@ const register =  async (req, res, next) => {
       });
     }
 
-    console.log("Hashing password..."); // Add this
+    console.log("Hashing password..."); 
 
     // Hash password
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    console.log("Inserting user..."); // Add this
-
+    console.log("Inserting user..."); 
     // Insert new user
     const [userId] = await req.db("users").insert({
       username: username,
       password: hashedPassword
     });
 
-    console.log("User created with ID:", userId); // Add this
+    console.log("User created with ID:", userId); 
 
     res.status(201).json({ 
       Error: false, 
@@ -231,32 +230,5 @@ const updatePassword = async (req, res) => {
   }
 };
 
-// LOGIN
-// const login = async (req, res) => {
-//     const { username, password } = req.body;
-
-//     try {
-//         const user = await knex('users').where({ username }).first();
-//         if (!user) {
-//             return res.status(400).json({ message: 'Invalid credentials' });
-//         }
-
-//         const valid = await bcrypt.compare(password, user.password);
-//         if (!valid) {
-//             return res.status(400).json({ message: 'Invalid credentials' });
-//         }
-
-//         // Create JWT
-//         const token = jwt.sign(
-//             { userId: user.id },
-//             process.env.JWT_SECRET,
-//             { expiresIn: '1h' }
-//         );
-
-//         res.json({ message: 'Login success', token });
-//     } catch (err) {
-//         res.status(500).json({ message: 'Login error', error: err.message });
-//     }
-// };
 
 module.exports = { register, login , updateUsername , updatePassword};
