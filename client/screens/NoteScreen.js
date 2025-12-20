@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import axios from '../services/axios';  // Import Axios configuration
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFontSize } from '../context/fontSizeContext';
 
 const NotesScreen = () => {
     const [notes, setNotes] = useState([]);
@@ -17,6 +18,8 @@ const NotesScreen = () => {
     const [editingId, setEditingId] = useState(null);
     const [editTitle, setEditTitle] = useState('');
     const [editContent, setEditContent] = useState('');
+
+    const { fontSize } = useFontSize(); // GET FONT SIZE FROM CONTEXT
 
 
     useEffect(() => {
@@ -268,8 +271,8 @@ const NotesScreen = () => {
                                         onPress={() => toggleExpand(note.id)}
                                     >
                                         <View style={styles.noteTitleContainer}>
-                                            <Text style={styles.noteTitle}>{note.title}</Text>
-                                            <Text style={styles.noteDate}>
+                                            <Text style={[styles.noteTitle, fontSize === 'big' ? styles.bigText : styles.smallText]}>{note.title}</Text>
+                                            <Text style={[styles.noteDate, fontSize === 'big' ? styles.bigNoteDate : styles.smallNoteDate]}>
                                                 {formatDate(note.created_at)}
                                             </Text>
                                         </View>
@@ -280,7 +283,7 @@ const NotesScreen = () => {
 
                                     {expandedId === note.id && (
                                         <View style={styles.noteContent}>
-                                            <Text style={styles.contentText}>{note.content}</Text>
+                                            <Text style={[styles.contentText, fontSize === 'big' ? styles.bigContentText : styles.smallContentText] }>{note.content}</Text>
                                             <View style={styles.actionButtons}>
                                                 <TouchableOpacity
                                                     style={[styles.actionButton, styles.editButton]}
@@ -429,6 +432,13 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#999',
     },
+    smallNoteDate:{
+        fontSize: 12
+    },
+    bigNoteDate:{
+        fontSize: 14
+    }
+    ,
     expandIcon: {
         fontSize: 16,
         color: '#007AFF',
@@ -444,8 +454,16 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#666',
         lineHeight: 24,
-        marginBottom: 15,
+        marginBottom: 10,
+        marginTop: 10,
     },
+    smallContentText: {
+        fontSize: 16,
+    },
+    bigContentText: {
+        fontSize: 20,
+    }
+    ,
     actionButtons: {
         flexDirection: 'row',
         justifyContent: 'flex-end',
@@ -491,5 +509,11 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 14,
         fontWeight: '600',
+    },
+    smallText: {
+        fontSize: 16, // Default small font size
+    },
+    bigText: {
+        fontSize: 20, // Larger font size
     },
 });

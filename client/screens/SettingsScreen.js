@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert, ScrollView, TextInput, Modal, Switch } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from '../services/axios';
+import { useFontSize } from '../context/fontSizeContext';
 
 export default function SettingsScreen({ navigation }) {
     const [username, setUsername] = useState('');
@@ -20,13 +21,14 @@ export default function SettingsScreen({ navigation }) {
     // Notification settings
     const [notificationsEnabled, setNotificationsEnabled] = useState(false);
 
-    // Font Size State
-    const [fontSize, setFontSize] = useState('small');
+    // Local Font Size State
+    //const [fontSize, setFontSize] = useState('small');
+    // USE CONTEXT INSTEAD OF LOCAL STATE
+    const { fontSize, updateFontSize } = useFontSize();
 
     useEffect(() => {
         loadUserData();
         loadNotificationSettings();
-        loadFontSize();
     }, []);
 
     const loadUserData = async () => {
@@ -64,21 +66,11 @@ export default function SettingsScreen({ navigation }) {
         }
     };
 
-    const loadFontSize = async () => {
-        try {
-            const storedFontSize = await AsyncStorage.getItem('fontSize');
-            if (storedFontSize) {
-                setFontSize(storedFontSize);
-            }
-        } catch (error) {
-            console.error('Error loading font size:', error);
-        }
-    };
 
     const toggleFontSize = async (value) => {
         try {
-            setFontSize(value);
-            await AsyncStorage.setItem('fontSize', value);
+            await updateFontSize(value);
+            //await AsyncStorage.setItem('fontSize', value);
 
             Alert.alert('Font Size Changed', `The font size is now set to ${value}`);
         } catch (error) {
@@ -188,49 +180,49 @@ export default function SettingsScreen({ navigation }) {
                 {/* User Profile */}
                 <View style={styles.profileSection}>
                     <View style={styles.avatar}>
-                        <Text style={styles.avatarText}>
+                        <Text style={[styles.avatarText]}>
                             {username.charAt(0).toUpperCase()}
                         </Text>
                     </View>
-                    <Text style={styles.username}>{username}</Text>
+                    <Text style={[styles.username, fontSize === 'big' ? styles.bigText : styles.smallText]}>{username}</Text>
                 </View>
 
                 {/* Account Section */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Account</Text>
+                    <Text style={[styles.sectionTitle, fontSize === 'big' ? styles.bigText : styles.smallText]}>Account</Text>
 
                     <TouchableOpacity
-                        style={styles.option}
+                        style={[styles.option]}
                         onPress={() => setShowUsernameModal(true)}
                     >
-                        <Text style={styles.optionText}>Change username</Text>
+                        <Text style={[styles.optionText, fontSize === 'big' ? styles.bigText : styles.smallText]}>Change username</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
                         style={styles.option}
                         onPress={() => setShowPasswordModal(true)}
                     >
-                        <Text style={styles.optionText}>Change password</Text>
+                        <Text style={[styles.optionText, fontSize === 'big' ? styles.bigText : styles.smallText]}>Change password</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-                        <Text style={styles.logoutButtonText}>Logout</Text>
+                        <Text style={[styles.logoutButtonText, fontSize === 'big' ? styles.bigText : styles.smallText]}>Logout</Text>
                     </TouchableOpacity>
                 </View>
 
                 {/* App Settings Section */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>App Settings</Text>
+                    <Text style={[styles.sectionTitle, fontSize === 'big' ? styles.bigText : styles.smallText]}>App Settings</Text>
 
 
                     {/* Notification Toggle */}
                     <View style={styles.optionWithSwitch}>
                         <View style={styles.optionTextContainer}>
-                            <Text style={styles.optionText}>Notifications</Text>
+                            <Text style={[styles.optionText, fontSize === 'big' ? styles.bigText : styles.smallText]}>Notifications</Text>
                         </View>
                         <Switch
                             trackColor={{ false: '#767577', true: '#81b0ff' }}
-                            thumbColor={notificationsEnabled ? '#007AFF' : '#f4f3f4'}
+                            thumbColor={notificationsEnabled ? '#007AFF' : '#c0b6c0ff'}
                             ios_backgroundColor="#3e3e3e"
                             onValueChange={toggleNotifications}
                             value={notificationsEnabled}
@@ -240,7 +232,7 @@ export default function SettingsScreen({ navigation }) {
                     {/* Font Size Toggle */}
                     <View style={styles.optionWithSwitch}>
                         <View style={styles.optionTextContainer}>
-                            <Text style={styles.optionText}>Font Size -  small/big</Text>
+                            <Text style={[styles.optionText, fontSize === 'big' ? styles.bigText : styles.smallText]}>Font Size -  small/big</Text>
                         </View>
                         <Switch
                             trackColor={{ false: '#767577', true: '#81b0ff' }}
@@ -252,24 +244,24 @@ export default function SettingsScreen({ navigation }) {
                     </View>
 
                     <TouchableOpacity style={styles.option} onPress={handleClearData}>
-                        <Text style={[styles.optionText, styles.dangerText]}>Clear Data</Text>
+                        <Text style={[styles.optionText, styles.dangerText, fontSize === 'big' ? styles.bigText : styles.smallText]}>Clear Data</Text>
                     </TouchableOpacity>
                 </View>
 
                 {/* About Section */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>About</Text>
+                    <Text style={[styles.sectionTitle, fontSize === 'big' ? styles.bigText : styles.smallText]}>About</Text>
 
                     <TouchableOpacity style={styles.option}>
-                        <Text style={styles.optionText}>Version 1.0.0</Text>
+                        <Text style={[styles.optionText, fontSize === 'big' ? styles.bigText : styles.smallText]}>Version 1.0.0</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.option}>
-                        <Text style={styles.optionText}>Terms of Service</Text>
+                        <Text style={[styles.optionText, fontSize === 'big' ? styles.bigText : styles.smallText]}>Terms of Service</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.option}>
-                        <Text style={styles.optionText}>Privacy Policy</Text>
+                        <Text style={[styles.optionText, fontSize === 'big' ? styles.bigText : styles.smallText]}>Privacy Policy</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -523,5 +515,11 @@ const styles = StyleSheet.create({
     },
     optionTextContainer: {
         flex: 1,
+    },
+    smallText: {
+        fontSize: 16, // Default small font size
+    },
+    bigText: {
+        fontSize: 20, // Larger font size
     },
 });
