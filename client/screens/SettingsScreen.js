@@ -240,7 +240,7 @@ export default function SettingsScreen({ navigation }) {
                     {/* Font Size Toggle */}
                     <View style={styles.optionWithSwitch}>
                         <View style={styles.optionTextContainer}>
-                            <Text style={styles.optionText}>Font Size</Text>
+                            <Text style={styles.optionText}>Font Size -  small/big</Text>
                         </View>
                         <Switch
                             trackColor={{ false: '#767577', true: '#81b0ff' }}
