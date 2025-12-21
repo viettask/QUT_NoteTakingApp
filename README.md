@@ -47,7 +47,7 @@ Follow these steps to contribute effectively:
 
    - Session Management:
 
-   Persistent user session stored via AsyncStorage for easy access to user data across sessions.
+      Persistent user session stored via AsyncStorage for easy access to user data across sessions.
 
 2. Notes Management:
 
@@ -105,43 +105,43 @@ Follow these steps to contribute effectively:
 
    - Input Forms:
 
-   Forms for adding/editing notes and categories.
+      Forms for adding/editing notes and categories.
 
    - Action Buttons:
 
-   Buttons for adding, editing, and deleting notes.
+      Buttons for adding, editing, and deleting notes.
 
-   A cancel button when editing a note.
+      A cancel button when editing a note.
 
    - Splash screen:
 
-   The default view when first launching the application
+      The default view when first launching the application
 
-   Includes a logo image and some text.
+      Includes a logo image and some text.
 
 6. Database Integration:
 
    - MySQL Database:
 
-   Users, Notes and categories are stored in a MySQL database.
+      Users, Notes and categories are stored in a MySQL database.
 
-   CRUD operations are performed via API calls (Express/Node.js backend).
+      CRUD operations are performed via API calls (Express/Node.js backend).
 
 7. API Integration:
 
    - REST API:
 
-   All actions related to users, notes and categories are performed through REST API calls using Axios.
+      All actions related to users, notes and categories are performed through REST API calls using Axios.
 
-   API routes for getting, adding, updating, and deleting notes are available.
+      API routes for getting, adding, updating, and deleting notes are available.
 
-   API routes for getting and updating users are available
+      API routes for getting and updating users are available
 
 8. Styling & Theme:
 
    - Customizable Colors:
 
-   Notes and categories can have specific colors that are visually represented in the app.
+      Notes and categories can have specific colors that are visually represented in the app.
 
 ## Technologies Used
 
@@ -149,69 +149,69 @@ Follow these steps to contribute effectively:
 
    - React Native:
 
-   For building the cross-platform mobile app (iOS & Android).
+      For building the cross-platform mobile app (iOS & Android).
 
    - React (with React Hooks):
 
-   For building and managing components.
+      For building and managing components.
 
    - Axios:
 
-   For making HTTP requests to the backend API (for fetching notes, categories, etc.).
+      For making HTTP requests to the backend API (for fetching notes, categories, etc.).
 
    - AsyncStorage:
 
-   To store user session data (user ID, username) locally on the device.
+      To store user session data (user ID, username) locally on the device.
 
    - Context API (Font Size Context):
 
-   For managing and providing the font size preference across the app.
+      For managing and providing the font size preference across the app.
 
    - React Navigation:
 
-   For navigating between different screens in the app.
+      For navigating between different screens in the app.
 
 2. Backend Technologies:
 
    - Node.js:
 
-   The runtime for building your server-side application.
+      The runtime for building your server-side application.
 
    - Express.js:
 
-   Web framework for handling HTTP requests and routing on the backend.
+      Web framework for handling HTTP requests and routing on the backend.
 
    - Knex.js:
 
-   SQL query builder for Node.js, used to interact with the MySQL database.
+      SQL query builder for Node.js, used to interact with the MySQL database.
 
    - MySQL:
 
-   Relational database for storing notes, users, and categories.
+      Relational database for storing notes, users, and categories.
 
    - JWT (JSON Web Tokens) (Optional if used):
 
-   For authenticating users securely and managing sessions (if implemented).
+      For authenticating users securely and managing sessions (if implemented).
 
 3. Database & Storage:
 
    - MySQL Database:
 
-   Relational database where notes and categories are stored.
+      Relational database where notes and categories are stored.
 
    - Knex.js (Database ORM/Query Builder):
 
-   To interact with MySQL through queries for adding, editing, deleting, and fetching notes and categories.
+      To interact with MySQL through queries for adding, editing, deleting, and fetching notes and categories.
 
 4. Authentication (Optional if used):
 
    - JWT (JSON Web Token):
 
-   For managing secure authentication of users if implemented.
+      For managing secure authentication of users if implemented.
 
    - bcrypt.js (for password hashing):
 
-   For securely hashing and checking user passwords.
+      For securely hashing and checking user passwords.
      
 ## Repository Structure
  ```bash
