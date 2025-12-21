@@ -77,24 +77,71 @@ Follow these steps to contribute effectively:
 
       Clicking on a note reveals its full content, including the title and description.
 
-3. Header with navigation bar menu: A simple and accessible menu allowing users to navigate between pages such as Home, About, Resume, Portfolio, Search, and Photos.
+3. Category Management:
 
-4. Footer: A consistent footer across all pages with email contact and legal information.
+   - Categorized Notes:
 
-5. Pages:
+      Notes can be assigned to categories (e.g., Work, Personal, etc.).
 
-   - Home Page: Includes a hero image and introduction text.
+   - Category Selection:
 
-   - About Page: Personal information.
+      Users can choose or edit the category when creating or editing a note.
 
-   - Resume Page: Displays a professional summary, career history, skills, and qualifications.
+   - Category Display:
 
-   - Portfolio Page: Showcases projects and creations, populated from Github API.
+      Display category name and color alongside each note to visually categorize them.
 
-6. External API integration.
-   The project uses multiple online APIs:
-   - API #1 – Project/portfolio data (for dynamic population of the Portfolio page)
-   - API #2 – Google Maps API via @react-google-maps/api (Used for location features and geolocation-based interactions)
+4. UI Features:
+
+   - Responsive Layout:
+
+      The app adapts its layout based on screen size (for mobile devices and tablets).
+
+   - Font Size Adjustment:
+
+      Users can change the font size for better readability.
+
+5. User Interface Components:
+
+   - Input Forms:
+
+   Forms for adding/editing notes and categories.
+
+   - Action Buttons:
+
+   Buttons for adding, editing, and deleting notes.
+
+   A cancel button when editing a note.
+
+   - Splash screen:
+
+   The default view when first launching the application
+
+   Includes a logo image and some text.
+
+6. Database Integration:
+
+   - MySQL Database:
+
+   Users, Notes and categories are stored in a MySQL database.
+
+   CRUD operations are performed via API calls (Express/Node.js backend).
+
+7. API Integration:
+
+   - REST API:
+
+   All actions related to users, notes and categories are performed through REST API calls using Axios.
+
+   API routes for getting, adding, updating, and deleting notes are available.
+
+   API routes for getting and updating users are available
+
+8. Styling & Theme:
+
+   - Customizable Colors:
+
+   Notes and categories can have specific colors that are visually represented in the app.
 
 ## Technologies Used
 1. Core web technologies
