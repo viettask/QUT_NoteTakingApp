@@ -1,11 +1,33 @@
 const knex = require('../config/knex');
 
+// Get all categories
+const getCategories = async (req, res) => {
+    console.log("Categories route hit");  // Log to verify the route is called
+    try {
+        const categories = await req.db('categories')
+            .select('id', 'name', 'color', 'description')
+            .orderBy('name', 'asc');
+
+        res.json({
+            Error: false,
+            Message: 'Success',
+            categories: categories
+        });
+    } catch (error) {
+        console.error('Error fetching categories:', error);
+        res.status(500).json({
+            Error: true,
+            Message: 'Error fetching categories'
+        });
+    }
+};
+
 // Get all notes for a user
 const getNotes = async (req, res) => {
     const userId = req.query.user_id;
 
     try {
-        let query = req.db.from('notes').select('*').orderBy('created_at', 'desc');
+        let query = req.db.from('notes as n').leftJoin('categories as c', 'n.category_id', 'c.id').select('n.*', 'c.name as category_name','c.color as category_color').orderBy('n.created_at', 'desc');
 
         // Filter by user if provided
         if (userId) {
@@ -68,10 +90,13 @@ const addNewNote = async (req, res) => {
     }
 };
 
+
+
+
 // Update an existing note
 const updateNote = async (req, res) => {
     const { id } = req.params;
-    const { title, content } = req.body;
+    const { title, content, category_id} = req.body;
 
     // Validation
     if (!title || !content) {
@@ -100,12 +125,15 @@ const updateNote = async (req, res) => {
             .update({
                 title: title,
                 content: content,
+                category_id: category_id,
                 updated_at: new Date()
             });
 
         // Get the updated note
-        const updatedNote = await req.db('notes')
-            .where('id', id)
+        const updatedNote = await req.db('notes as n')
+            .leftJoin('categories as c', 'n.category_id', 'c.id')
+            .select('n.*', 'c.name as category_name', 'c.color as category_color')
+            .where('n.id', id)
             .first();
 
         res.json({
@@ -157,4 +185,4 @@ const deleteNote = async (req, res) => {
     }
 };
 
-module.exports = { getNotes, addNewNote, updateNote, deleteNote };
+module.exports = { getNotes, addNewNote, updateNote, deleteNote, getCategories};

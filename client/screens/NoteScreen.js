@@ -5,6 +5,7 @@ import {
 import axios from '../services/axios';  // Import Axios configuration
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFontSize } from '../context/fontSizeContext';
+//import { set } from '../../server/app';
 
 const NotesScreen = () => {
     const [notes, setNotes] = useState([]);
@@ -18,6 +19,8 @@ const NotesScreen = () => {
     const [editingId, setEditingId] = useState(null);
     const [editTitle, setEditTitle] = useState('');
     const [editContent, setEditContent] = useState('');
+    const [editCategoryId, setEditCategoryId] = useState(null);
+    const [categories, setCategories] = useState([]);
 
     const { fontSize } = useFontSize(); // GET FONT SIZE FROM CONTEXT
 
@@ -37,12 +40,27 @@ const NotesScreen = () => {
             if (storedUserId) {
                 setUserId(storedUserId);
                 setUsername(storedUsername || 'User');
+                await fetchCategories();
                 fetchNotes(storedUserId);
             } else {
                 Alert.alert('Error', 'User not logged in');
             }
         } catch (error) {
             console.error('Error loading user:', error);
+        }
+    };
+
+    const fetchCategories = async () => {
+        try {
+            const response = await axios.get(`http://10.0.2.2:3000/notes/categories`);
+            console.log('Categories fetched:', response.data);
+            setCategories(response.data.categories || []);
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+            Alert.alert('Error', 'Failed to load categories');
+        }
+        finally {
+            setLoading(false);
         }
     };
 
@@ -94,6 +112,7 @@ const NotesScreen = () => {
         setEditingId(note.id);
         setEditTitle(note.title);
         setEditContent(note.content);
+        setEditCategoryId(note.category_id || null);
         setExpandedId(null);
     };
 
@@ -102,6 +121,7 @@ const NotesScreen = () => {
         setEditingId(null);
         setEditTitle('');
         setEditContent('');
+        setEditCategoryId(null);
     };
 
     // Save edited note
@@ -115,6 +135,7 @@ const NotesScreen = () => {
             const response = await axios.put(`http://10.0.2.2:3000/notes/${id}`, {
                 title: editTitle.trim(),
                 content: editContent.trim(),
+                category_id: editCategoryId,
             });
 
             console.log('Note updated:', response.data);
@@ -129,6 +150,7 @@ const NotesScreen = () => {
             setEditingId(null);
             setEditTitle('');
             setEditContent('');
+            setEditCategoryId(null);
             Alert.alert('Success', 'Note updated successfully!');
         } catch (error) {
             console.error('Error updating note:', error);
@@ -229,7 +251,7 @@ const NotesScreen = () => {
                     </View>
                 ) : (
                     notes.map((note) => (
-                        <View key={note.id} style={styles.noteCard}>
+                        <View key={note.id} style={[styles.noteCard, { backgroundColor: note.category_color || '#fff' }]}>
                             {editingId === note.id ? (
                                 <View style={styles.editForm}>
                                     <TextInput
@@ -239,6 +261,28 @@ const NotesScreen = () => {
                                         onChangeText={setEditTitle}
                                         autoCapitalize="sentences"
                                     />
+                                    {/* Category Selector for Edit */}
+                                    <View style={styles.categorySelector}>
+                                        <Text style={styles.categorySelectorLabel}>Category:</Text>
+                                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScrollView}>
+                                            {categories.map((cat) => (
+                                                <TouchableOpacity
+                                                    key={cat.id}
+                                                    style={[
+                                                        styles.categoryChip,
+                                                        { backgroundColor: cat.color },
+                                                        editCategoryId === cat.id && styles.categoryChipSelected
+                                                    ]}
+                                                    onPress={() => setEditCategoryId(cat.id)}
+                                                >
+                                                    <Text style={styles.categoryChipText}>
+                                                        {cat.name}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            ))}
+                                        </ScrollView>
+                                    </View>
+
                                     <TextInput
                                         style={[styles.input, styles.textArea]}
                                         placeholder="Note Content"
@@ -271,7 +315,20 @@ const NotesScreen = () => {
                                         onPress={() => toggleExpand(note.id)}
                                     >
                                         <View style={styles.noteTitleContainer}>
-                                            <Text style={[styles.noteTitle, fontSize === 'big' ? styles.bigText : styles.smallText]}>{note.title}</Text>
+                                            {/* <Text style={[styles.noteTitle, fontSize === 'big' ? styles.bigText : styles.smallText]}>{note.title}</Text> */}
+
+                                            <View style={styles.titleRow}>
+                                                <Text style={[styles.noteTitle, fontSize === 'big' ? styles.bigText : styles.smallText]}>
+                                                    {note.title}
+                                                </Text>
+                                                {note.category_name && (
+                                                    <View style={styles.categoryBadge}>
+                                                        <Text style={styles.categoryBadgeText}>
+                                                            {note.category_name}
+                                                        </Text>
+                                                    </View>
+                                                )}
+                                            </View>
                                             <Text style={[styles.noteDate, fontSize === 'big' ? styles.bigNoteDate : styles.smallNoteDate]}>
                                                 {formatDate(note.created_at)}
                                             </Text>
@@ -283,7 +340,7 @@ const NotesScreen = () => {
 
                                     {expandedId === note.id && (
                                         <View style={styles.noteContent}>
-                                            <Text style={[styles.contentText, fontSize === 'big' ? styles.bigContentText : styles.smallContentText] }>{note.content}</Text>
+                                            <Text style={[styles.contentText, fontSize === 'big' ? styles.bigContentText : styles.smallContentText]}>{note.content}</Text>
                                             <View style={styles.actionButtons}>
                                                 <TouchableOpacity
                                                     style={[styles.actionButton, styles.editButton]}
@@ -432,10 +489,10 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#999',
     },
-    smallNoteDate:{
+    smallNoteDate: {
         fontSize: 12
     },
-    bigNoteDate:{
+    bigNoteDate: {
         fontSize: 14
     }
     ,
@@ -515,5 +572,58 @@ const styles = StyleSheet.create({
     },
     bigText: {
         fontSize: 20, // Larger font size
+    },
+    titleRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 4,
+        flexWrap: 'wrap',
+    },
+    categoryBadge: {
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+        paddingHorizontal: 10,
+        paddingVertical: 4,
+        borderRadius: 12,
+        marginLeft: 8,
+    },
+    categoryBadgeText: {
+        color: '#fff',
+        fontSize: 13,
+        fontWeight: '600',
+    },
+    smallCategoryBadgeText: {
+        fontSize: 13,
+    },
+    bigCategoryBadgeText: {
+        fontSize: 15,
+    },
+    categorySelector: {
+        marginBottom: 15,
+    },
+    categorySelectorLabel: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#333',
+        marginBottom: 8,
+    },
+    categoryScrollView: {
+        flexDirection: 'row',
+    },
+    categoryChip: {
+        paddingHorizontal: 14,
+        paddingVertical: 8,
+        borderRadius: 16,
+        marginRight: 8,
+        opacity: 0.7,
+    },
+    categoryChipSelected: {
+        opacity: 1,
+        borderWidth: 3,
+        borderColor: '#000',
+    },
+    categoryChipText: {
+        color: '#fff',
+        fontSize: 12,
+        fontWeight: '600',
     },
 });

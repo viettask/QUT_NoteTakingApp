@@ -36,7 +36,7 @@ app.get('/', (req, res) => {
   res.json({ message: 'Server is running' });
 });
 app.use('/auth', authRoutes);
-console.log('About to mount /notes route');
+console.log('About to mount /auth route');
 app.use('/notes', noteRoutes);
 console.log('About to mount /notes route');
 
