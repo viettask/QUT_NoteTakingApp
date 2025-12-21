@@ -57,3 +57,5 @@ Thumbs.db
 android/app/build/
 ios/Pods/
 *.keystore
+
+Note.md
