@@ -144,34 +144,78 @@ Follow these steps to contribute effectively:
    Notes and categories can have specific colors that are visually represented in the app.
 
 ## Technologies Used
-1. Core web technologies
-   - HTML5 - structure and semantic layout
-   - CSS3 - Styling, animations, responsive design
-   - Javascript (ES6+) - logic, components, and API integration
-     
-2. Frontend Framework
-   - React 18 - Component based UI development
-   - React Router DOM 17 - Client-side routing for multiple pages
 
-3. Styling & UI
-   - Bootstrap 5 - layout and pre-built components
-   - Lucide React - Icon library
+1. Frontend Technologies:
 
-4. APIs & Data fetching:
-   - Axios - HTTP requests
-   - @react-google-maps/api - Google Maps rendering + geolocation
+   - React Native:
 
-5. Testing
-   - React testing library
-   - Jest DOM
-   - User Event
+   For building the cross-platform mobile app (iOS & Android).
 
-6. Build Tools
-   - Create React App (react-scripts)
+   - React (with React Hooks):
+
+   For building and managing components.
+
+   - Axios:
+
+   For making HTTP requests to the backend API (for fetching notes, categories, etc.).
+
+   - AsyncStorage:
+
+   To store user session data (user ID, username) locally on the device.
+
+   - Context API (Font Size Context):
+
+   For managing and providing the font size preference across the app.
+
+   - React Navigation:
+
+   For navigating between different screens in the app.
+
+2. Backend Technologies:
+
+   - Node.js:
+
+   The runtime for building your server-side application.
+
+   - Express.js:
+
+   Web framework for handling HTTP requests and routing on the backend.
+
+   - Knex.js:
+
+   SQL query builder for Node.js, used to interact with the MySQL database.
+
+   - MySQL:
+
+   Relational database for storing notes, users, and categories.
+
+   - JWT (JSON Web Tokens) (Optional if used):
+
+   For authenticating users securely and managing sessions (if implemented).
+
+3. Database & Storage:
+
+   - MySQL Database:
+
+   Relational database where notes and categories are stored.
+
+   - Knex.js (Database ORM/Query Builder):
+
+   To interact with MySQL through queries for adding, editing, deleting, and fetching notes and categories.
+
+4. Authentication (Optional if used):
+
+   - JWT (JSON Web Token):
+
+   For managing secure authentication of users if implemented.
+
+   - bcrypt.js (for password hashing):
+
+   For securely hashing and checking user passwords.
      
 ## Repository Structure
  ```bash
-/IFQ666_react_web_assignment1 
+/QUT_NoteTakingApp
 ├── src
 │   ├── API                           # API components (Github, Google Maps Javascript, NewsAPI, PicSum) 
 │   ├── assets                        # Public assets (icons, photos)
@@ -191,7 +235,7 @@ To run this project locally:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/viettask/IFQ666_react_web_assignment1.git
+   git clone https://github.com/viettask/QUT_NoteTakingApp.git
    ```
 
 2. Navigate into the project directory:
