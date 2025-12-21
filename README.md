@@ -14,7 +14,7 @@ Follow these steps to contribute effectively:
 
 2. Clone your fork
       ```bash
-   git clone https://github.com/viettask/IFQ666_react_web_assignment1.git
+   git clone https://github.com/viettask/QUT_NoteTakingApp.git
    ```
    
 3. Create a new branch for your feature or fix:
@@ -37,9 +37,45 @@ Follow these steps to contribute effectively:
 
 ## Features
 
-1. Basic create-react-app setup with a focus on the assignment requirements.
+1. User Authentication:
 
-2. Responsive Design: The website adapts to all screen sizes, ensuring an optimal user experience on both desktop and mobile devices.
+   - Login & Registration:
+
+      Users can create a new account (register) or log into their existing account.
+
+      Secure login using credentials (username and password).
+
+   - Session Management:
+
+   Persistent user session stored via AsyncStorage for easy access to user data across sessions.
+
+2. Notes Management:
+
+   - View Notes:
+
+      Display a list of all notes that belong to the logged-in user.
+
+      Notes are fetched dynamically based on the user’s ID.
+
+   - Add New Note:
+
+      Users can create new notes by entering a title and content.
+
+      A note is saved with a category, content, and a timestamp.
+
+   - Edit Note:
+
+      Users can edit the title, content, color and category of existing notes.
+
+      Editing is done on a specific note (by clicking on it), and the changes are saved.
+
+   - Delete Note:
+
+      Users can delete notes, with a confirmation prompt to prevent accidental deletions.
+
+   - Expandable Note View:
+
+      Clicking on a note reveals its full content, including the title and description.
 
 3. Header with navigation bar menu: A simple and accessible menu allowing users to navigate between pages such as Home, About, Resume, Portfolio, Search, and Photos.
 
