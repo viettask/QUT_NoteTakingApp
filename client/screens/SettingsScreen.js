@@ -1,10 +1,13 @@
+// import necessary modules and components
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert, ScrollView, TextInput, Modal, Switch } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from '../services/axios';
+// Import the font size context hook
 import { useFontSize } from '../context/fontSizeContext';
 
 export default function SettingsScreen({ navigation }) {
+    // State variables for user data, modals and notification settings
     const [username, setUsername] = useState('');
     const [userId, setUserId] = useState(null);
 
@@ -21,16 +24,16 @@ export default function SettingsScreen({ navigation }) {
     // Notification settings
     const [notificationsEnabled, setNotificationsEnabled] = useState(false);
 
-    // Local Font Size State
-    //const [fontSize, setFontSize] = useState('small');
-    // USE CONTEXT INSTEAD OF LOCAL STATE
+    // font size from context
     const { fontSize, updateFontSize } = useFontSize();
 
+    // Load user data and notification settings on component mount
     useEffect(() => {
         loadUserData();
         loadNotificationSettings();
     }, []);
 
+    // Load user data from AsyncStorage (username and userId)
     const loadUserData = async () => {
         try {
             const storedUsername = await AsyncStorage.getItem('username');
@@ -42,6 +45,7 @@ export default function SettingsScreen({ navigation }) {
         }
     };
 
+    // Load notification settings from AsyncStorage
     const loadNotificationSettings = async () => {
         try {
             const notifEnabled = await AsyncStorage.getItem('notificationsEnabled');
@@ -51,6 +55,7 @@ export default function SettingsScreen({ navigation }) {
         }
     };
 
+    // Toggle notification settings and save to AsyncStorage
     const toggleNotifications = async (value) => {
         try {
             setNotificationsEnabled(value);
@@ -66,7 +71,7 @@ export default function SettingsScreen({ navigation }) {
         }
     };
 
-
+    // Toggle font size between 'small' and 'big' and update it in the context
     const toggleFontSize = async (value) => {
         try {
             await updateFontSize(value);
@@ -78,6 +83,7 @@ export default function SettingsScreen({ navigation }) {
         }
     };
 
+    // Handle username change
     const handleChangeUsername = async () => {
         if (!newUsername.trim()) {
             Alert.alert('Error', 'Please enter a new username');
@@ -89,7 +95,7 @@ export default function SettingsScreen({ navigation }) {
                 username: newUsername.trim(),
             });
 
-            // Update AsyncStorage
+            // Update AsyncStorage and UI with new username
             await AsyncStorage.setItem('username', newUsername.trim());
             setUsername(newUsername.trim());
             setNewUsername('');
@@ -101,6 +107,7 @@ export default function SettingsScreen({ navigation }) {
         }
     };
 
+    // Handle password change
     const handleChangePassword = async () => {
         if (!currentPassword || !newPassword || !confirmPassword) {
             Alert.alert('Error', 'Please fill in all fields');
@@ -134,6 +141,7 @@ export default function SettingsScreen({ navigation }) {
         }
     };
 
+    // Handle user logout and remove stored date from AsyncStorage
     const handleLogout = async () => {
         Alert.alert(
             'Logout',
@@ -154,6 +162,7 @@ export default function SettingsScreen({ navigation }) {
         );
     };
 
+    // Clear all data stored in AsyncStorage and navigate to Login screen
     const handleClearData = () => {
         Alert.alert(
             'Clear Data',
@@ -191,20 +200,21 @@ export default function SettingsScreen({ navigation }) {
                 <View style={styles.section}>
                     <Text style={[styles.sectionTitle, fontSize === 'big' ? styles.bigText : styles.smallText]}>Account</Text>
 
+                    {/* Change Username Button */}
                     <TouchableOpacity
                         style={[styles.option]}
                         onPress={() => setShowUsernameModal(true)}
                     >
                         <Text style={[styles.optionText, fontSize === 'big' ? styles.bigText : styles.smallText]}>Change username</Text>
                     </TouchableOpacity>
-
+                    {/* Change Password Button */}
                     <TouchableOpacity
                         style={styles.option}
                         onPress={() => setShowPasswordModal(true)}
                     >
                         <Text style={[styles.optionText, fontSize === 'big' ? styles.bigText : styles.smallText]}>Change password</Text>
                     </TouchableOpacity>
-
+                    {/* Logout Button */}
                     <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
                         <Text style={[styles.logoutButtonText, fontSize === 'big' ? styles.bigText : styles.smallText]}>Logout</Text>
                     </TouchableOpacity>
@@ -242,7 +252,7 @@ export default function SettingsScreen({ navigation }) {
                             value={fontSize === 'big'}
                         />
                     </View>
-
+                    {/* Clear Data Button */}
                     <TouchableOpacity style={styles.option} onPress={handleClearData}>
                         <Text style={[styles.optionText, styles.dangerText, fontSize === 'big' ? styles.bigText : styles.smallText]}>Clear Data</Text>
                     </TouchableOpacity>
@@ -373,7 +383,7 @@ export default function SettingsScreen({ navigation }) {
     );
 }
 
-
+// Styles for the SettingsScreen components
 const styles = StyleSheet.create({
     container: {
         flex: 1,

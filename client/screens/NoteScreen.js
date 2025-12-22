@@ -1,34 +1,52 @@
+// import necessary modules and components
 import React, { useState, useEffect } from 'react';
 import {
     View, Text, Button, FlatList, ScrollView, TouchableOpacity, TextInput, StyleSheet, Alert, ActivityIndicator
 } from 'react-native';
-import axios from '../services/axios';  // Import Axios configuration
+// Import Axios configuration
+import axios from '../services/axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+// Import custom font size context
 import { useFontSize } from '../context/fontSizeContext';
-//import { set } from '../../server/app';
 
+// NotesScreen Component
 const NotesScreen = () => {
+    // Store notes data
     const [notes, setNotes] = useState([]);
+    // Track expanded note (for toggling content visibility)
     const [expandedId, setExpandedId] = useState(null);
+    // Control loading state
     const [loading, setLoading] = useState(true);
+    // Toggling visibility of Add Note form
     const [showAddForm, setShowAddForm] = useState(false);
+    // Stores new note title and content
     const [newTitle, setNewTitle] = useState('');
+    // Stores new note content
     const [newContent, setNewContent] = useState('');
+    // Stores the logged-in user's ID and username
     const [userId, setUserId] = useState(null);
     const [username, setUsername] = useState('');
+    // Tracks which note is being edited
     const [editingId, setEditingId] = useState(null);
+    // Stores edited note details
     const [editTitle, setEditTitle] = useState('');
+    // Stores the content of the note being edited
     const [editContent, setEditContent] = useState('');
+    // Stores the category ID of the note being edited
     const [editCategoryId, setEditCategoryId] = useState(null);
+    // Stores the list of categories
     const [categories, setCategories] = useState([]);
 
-    const { fontSize } = useFontSize(); // GET FONT SIZE FROM CONTEXT
 
+    // Get the font size setting from context
+    const { fontSize } = useFontSize();
 
+    // Fetch notes when component mounts
     useEffect(() => {
         loadUserAndFetchNotes();
     }, []);
 
+    //Load user data from AsyncStorage and fetch notes for that user
     const loadUserAndFetchNotes = async () => {
         try {
             const storedUserId = await AsyncStorage.getItem('userId');
@@ -50,6 +68,7 @@ const NotesScreen = () => {
         }
     };
 
+    // Fetch categories from the backend
     const fetchCategories = async () => {
         try {
             const response = await axios.get(`http://10.0.2.2:3000/notes/categories`);
@@ -64,24 +83,31 @@ const NotesScreen = () => {
         }
     };
 
+    // Fetch notes for the given user ID
     const fetchNotes = async (id) => {
         try {
             setLoading(true);
             console.log('Fetching notes for user:', id);
             const response = await axios.get(`http://10.0.2.2:3000/notes?user_id=${id}`); // Changed: Use baseURL from axios config
             console.log('Notes fetched:', response.data);
+            // Set the fetched notes into state
             setNotes(response.data.notes);
         } catch (error) {
             console.error('Error fetching notes:', error);
             Alert.alert('Error', 'Failed to load notes');
         } finally {
+            // set loading to false after fetch attempt
             setLoading(false);
         }
     };
+
+    // Toggle note expansion to show/hide content
     const toggleExpand = (id) => {
+        // If the clicked note is already expanded, collapse it; otherwise, expand it
         setExpandedId(expandedId === id ? null : id);
     };
 
+    // Add a new note
     const handleAddNote = async () => {
         if (!newTitle.trim() || !newContent.trim()) {
             Alert.alert('Error', 'Please fill in both title and content');
@@ -96,9 +122,12 @@ const NotesScreen = () => {
             });
 
             console.log('Note added:', response.data);
+            // Add the new note at the beginning of the notes list
             setNotes([response.data.note, ...notes]);
+            // Reset title input and content input
             setNewTitle('');
             setNewContent('');
+            // Hide the add note form
             setShowAddForm(false);
             Alert.alert('Success', 'Note added successfully!');
         } catch (error) {
@@ -113,6 +142,7 @@ const NotesScreen = () => {
         setEditTitle(note.title);
         setEditContent(note.content);
         setEditCategoryId(note.category_id || null);
+        // Collapse the note content view if it's being edited
         setExpandedId(null);
     };
 
@@ -146,7 +176,7 @@ const NotesScreen = () => {
                     note.id === id ? response.data.note : note
                 )
             );
-
+            // Reset editing state
             setEditingId(null);
             setEditTitle('');
             setEditContent('');
@@ -158,6 +188,7 @@ const NotesScreen = () => {
         }
     };
 
+    // Delete a note
     const handleDeleteNote = async (id) => {
         Alert.alert(
             'Delete Note',
@@ -170,6 +201,7 @@ const NotesScreen = () => {
                     onPress: async () => {
                         try {
                             await axios.delete(`http://10.0.2.2:3000/notes/${id}`);
+                            // Remove the deleted note from the list
                             setNotes(notes.filter(note => note.id !== id));
                             Alert.alert('Success', 'Note deleted successfully!');
                         } catch (error) {
@@ -182,6 +214,7 @@ const NotesScreen = () => {
         );
     };
 
+    // Format date to a readable string
     const formatDate = (dateString) => {
         if (!dateString) return '';
         const date = new Date(dateString);
@@ -192,6 +225,7 @@ const NotesScreen = () => {
         });
     };
 
+    // If data is still loading, show a loading spinner
     if (loading) {
         return (
             <View style={styles.centerContainer}>
@@ -205,13 +239,15 @@ const NotesScreen = () => {
         <View style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
+                {/* Display user's name or default 'My Notes' */}
                 <Text style={styles.headerTitle}>  {username
                     ? `${username.charAt(0).toUpperCase() + username.slice(1)}'s Notes`
                     : 'My Notes'
                 }</Text>
+                {/* Button to toggle the note add form */}
                 <TouchableOpacity
                     style={styles.addButton}
-                    onPress={() => setShowAddForm(!showAddForm)}
+                    onPress={() => setShowAddForm(!showAddForm)} // Toggling form visibility
                 >
                     <Text style={styles.addButtonText}>{showAddForm ? '✕' : '+'}</Text>
                 </TouchableOpacity>
@@ -220,6 +256,7 @@ const NotesScreen = () => {
             {/* Add Note Form */}
             {showAddForm && (
                 <View style={styles.addForm}>
+                    /* Input for note title */}
                     <TextInput
                         style={styles.input}
                         placeholder="Note Title"
@@ -227,6 +264,7 @@ const NotesScreen = () => {
                         onChangeText={setNewTitle}
                         autoCapitalize="sentences"
                     />
+                    {/* Input for note content (multi-line) */}
                     <TextInput
                         style={[styles.input, styles.textArea]}
                         placeholder="Note Content"
@@ -237,6 +275,7 @@ const NotesScreen = () => {
                         textAlignVertical="top"
                         autoCapitalize="sentences"
                     />
+                    {/* Button to save the new note */}
                     <TouchableOpacity style={styles.saveButton} onPress={handleAddNote}>
                         <Text style={styles.saveButtonText}>Save Note</Text>
                     </TouchableOpacity>
@@ -247,13 +286,16 @@ const NotesScreen = () => {
             <ScrollView style={styles.notesList}>
                 {notes.length === 0 ? (
                     <View style={styles.emptyContainer}>
+                        {/* Message when there are no notes */}
                         <Text style={styles.emptyText}>No notes yet. Tap + to add one!</Text>
                     </View>
                 ) : (
                     notes.map((note) => (
                         <View key={note.id} style={[styles.noteCard, { backgroundColor: note.category_color || '#fff' }]}>
+                            {/* If editing, show edit form */}
                             {editingId === note.id ? (
                                 <View style={styles.editForm}>
+                                    {/* Edit note title */}
                                     <TextInput
                                         style={styles.input}
                                         placeholder="Note Title"
@@ -265,6 +307,7 @@ const NotesScreen = () => {
                                     <View style={styles.categorySelector}>
                                         <Text style={styles.categorySelectorLabel}>Category:</Text>
                                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScrollView}>
+                                            {/* List of categories for selection */}
                                             {categories.map((cat) => (
                                                 <TouchableOpacity
                                                     key={cat.id}
@@ -282,7 +325,7 @@ const NotesScreen = () => {
                                             ))}
                                         </ScrollView>
                                     </View>
-
+                                    {/* Edit note content */}
                                     <TextInput
                                         style={[styles.input, styles.textArea]}
                                         placeholder="Note Content"
@@ -293,6 +336,7 @@ const NotesScreen = () => {
                                         textAlignVertical="top"
                                         autoCapitalize="sentences"
                                     />
+                                    {/* Buttons to cancel or save the update */}
                                     <View style={styles.editButtons}>
                                         <TouchableOpacity
                                             style={[styles.editActionButton, styles.cancelButton]}
@@ -310,6 +354,7 @@ const NotesScreen = () => {
                                 </View>
                             ) : (
                                 <>
+                                    {/* Note header with title and date */}
                                     <TouchableOpacity
                                         style={styles.noteHeader}
                                         onPress={() => toggleExpand(note.id)}
@@ -338,14 +383,17 @@ const NotesScreen = () => {
                                         </Text>
                                     </TouchableOpacity>
 
+                                    {/* Expanded content section */}
                                     {expandedId === note.id && (
                                         <View style={styles.noteContent}>
                                             <Text style={[styles.contentText, fontSize === 'big' ? styles.bigContentText : styles.smallContentText]}>{note.content}</Text>
+                                            {/* Action buttons: Edit and Delete */}
                                             <View style={styles.actionButtons}>
                                                 <TouchableOpacity
                                                     style={[styles.actionButton, styles.editButton]}
                                                     onPress={() => handleStartEdit(note)}
                                                 >
+
                                                     <Text style={styles.actionButtonText}>Edit</Text>
                                                 </TouchableOpacity>
                                                 <TouchableOpacity
@@ -370,6 +418,7 @@ const NotesScreen = () => {
 
 export default NotesScreen;
 
+// Styles for the NotesScreen components
 const styles = StyleSheet.create({
     container: {
         flex: 1,

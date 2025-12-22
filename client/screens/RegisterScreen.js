@@ -1,18 +1,21 @@
+// import necessary modules and components
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import axios from '../services/axios';  // Import Axios configuration
 
 export default function RegisterScreen({ navigation }) {
+    // States for username, password, and error message
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
+    // Function to handle user registration
     const handleRegister = async () => {
         console.log('=== REGISTER CLICKED ===');
         console.log('Username:', username);
         console.log('Password:', password);
 
-        // Validation
+        // Validation : Check if both username and password are provided
         if (!username.trim() || !password.trim) {
             console.log('Validation failed');
             setErrorMessage('Username and password are required');
@@ -20,36 +23,41 @@ export default function RegisterScreen({ navigation }) {
         }
 
         try {
-            // Change localhost to your computer's IP address for real device
-            // For Android emulator: use 10.0.2.2
-            // For iOS simulator: use localhost
+            // Send a POST request to register the user
+            // Change localhost to your computer's IP address for real devices
+            // For Android emulator: use 10.0.2.2, for iOS simulator: use localhost
             const response = await axios.post('http://10.0.2.2:3000/auth/register', {
                 username: username.trim(),
                 password: password.trim()
             });
             console.log('Registration success:', response.data);
 
-            // Navigate to login screen after successful registration
-            //   navigation.replace('Login');
+            // Show success alert and navigate to login screen after registration
             Alert.alert('Success', 'Registration successful!', [
                 { text: 'OK', onPress: () => navigation.replace('Login') }
             ]);
 
 
         } catch (error) {
+            // Handle error during registration
             console.error('Registration error:', error);
             const message = error.response?.data?.Message || 'Registration failed';
+            // Set error message to display to the user
             setErrorMessage(message);
+            // Show alert with error message
             Alert.alert('Error', message);
         }
     };
 
     return (
         <View style={styles.container}>
+            {/* Title for the screen */}
             <Text style={styles.title}>Create Account</Text>
             <Text style={styles.titleMessage}>Register your account to explore Note Taking App features</Text>
-            {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
 
+            {/* Display error message if there is one */}
+            {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
+            {/* Input field for username */}
             <TextInput
                 placeholder="Username"
                 value={username}
@@ -59,6 +67,7 @@ export default function RegisterScreen({ navigation }) {
                 }}
                 style={styles.input}
             />
+            {/* Input field for password */}
             <TextInput
                 placeholder="Password"
                 value={password}
@@ -69,10 +78,9 @@ export default function RegisterScreen({ navigation }) {
                 secureTextEntry
                 style={styles.input}
             />
-            {/* <Button title="Register" onPress={handleRegister} />
-            <Button title="Go to Login" onPress={() => navigation.navigate('Login')} /> */}
 
-            {/* Login Button */}
+
+            {/* Register Button - Tapping calls handleRegister function */}
             <TouchableOpacity style={styles.loginButton} onPress={handleRegister}>
                 <Text style={styles.buttonText}>Register</Text>
             </TouchableOpacity>
@@ -80,8 +88,7 @@ export default function RegisterScreen({ navigation }) {
             {/* Gap between buttons */}
             <View style={styles.gap}></View>
 
-            {/* Go to Register Button */}
-
+            {/* Navigate to login screen if the user already has an account */}
             <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                 <Text style={styles.registerText}>
                     Already have an account? <Text style={styles.registerLink}>Log in</Text>
@@ -91,6 +98,7 @@ export default function RegisterScreen({ navigation }) {
     );
 }
 
+// Styles for the RegisterScreen components
 const styles = StyleSheet.create({
     container: {
         flex: 1,

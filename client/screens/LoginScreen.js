@@ -1,20 +1,24 @@
+// import necessary modules and components
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import axios from '../services/axios';  // Import Axios configuration
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginScreen({ navigation }) {
+    // State variables for managing the form input values and error messages
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
+    // Function to handle login logic when the user clicks the Login button
     const handleLogin = async () => {
         console.log('=== LOGIN CLICKED ===');
-        console.log('Username:', username);
-        console.log('Password:', password);
+        console.log('Username:', username); // Logging the entered username
+        console.log('Password:', password); // Logging the entered password
 
-        // Validation
+        // Validation: Check if both username and password are entered
         if (!username.trim() || !password.trim()) {
+            // Show an alert if either field is empty
             Alert.alert('Error', 'Please enter username and password');
             return;
         }
@@ -22,35 +26,40 @@ export default function LoginScreen({ navigation }) {
         console.log('Making login request...');
 
         try {
+            // Making a POST request to the backend server for login authentication
             const response = await axios.post('http://10.0.2.2:3000/auth/login', {
-                username: username.trim(),
-                password: password.trim()
+                username: username.trim(), // Trim the username to remove extra spaces
+                password: password.trim() // Trim the password to remove extra spaces
             });
-            console.log('Login success:', response.data);
+            console.log('Login success:', response.data); // Logging successful login response
 
-            // Store user info
+            // Store the user info (ID and username) in AsyncStorage for future sessions
             await AsyncStorage.setItem('userId', response.data.User.id.toString());
             await AsyncStorage.setItem('username', response.data.User.username);
 
-            Alert.alert('Success', 'Login successful!');
+            Alert.alert('Success', 'Login successful!'); // Show a success alert
             // Navigate to main tab screen after successful login
             navigation.replace('Main');
         } catch (error) {
-            console.log('Login error:', error);
-            console.log('Error response:', error.response?.data);
-            const message = error.response?.data?.Message || 'Login failed';
-            setErrorMessage(message);
-            Alert.alert('Error', message);
+            console.log('Login error:', error);  // Log any errors during the login attempt
+            console.log('Error response:', error.response?.data); // Log the error response from the server (if available)
+            const message = error.response?.data?.Message || 'Login failed'; // Default error message if no message is provided
+            setErrorMessage(message); // Set the error message to display to the user
+            Alert.alert('Error', message); // Show an alert with the error message
         }
     };
 
     return (
+
+        // Main container for the login screen
         <View style={styles.container}>
             <Text style={styles.title}>Welcome to Note Taking App</Text>
             <Text style={styles.titleMessage}>Please enter your details</Text>
 
+            {/* Display error message if it exists */}
             {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
 
+            {/* Input field for username */}
             <TextInput
                 placeholder="Username"
                 value={username}
@@ -59,6 +68,7 @@ export default function LoginScreen({ navigation }) {
                 style={styles.input}
             />
 
+            {/* Input field for password */}
             <TextInput
                 placeholder="Password"
                 value={password}
@@ -75,17 +85,16 @@ export default function LoginScreen({ navigation }) {
             {/* Gap between buttons */}
             <View style={styles.gap}></View>
 
-            {/* Go to Register Button */}
-
+            {/* Link to navigate to the Register screen if the user doesn't have an account */}
             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
                 <Text style={styles.registerText}>
-                    Don't have an account? <Text style={styles.registerLink}>Register</Text>
+                    Don't have an account? <Text style={styles.registerLink}>Register</Text> {/* Display Register link */}
                 </Text>
             </TouchableOpacity>
         </View>
     );
 }
-
+// Styles for the LoginScreen components
 const styles = StyleSheet.create({
     container: {
         flex: 1,

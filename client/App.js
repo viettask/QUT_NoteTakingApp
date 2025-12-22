@@ -1,3 +1,4 @@
+// Import necessary modules and components from React, React Native, and other libraries
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import React, { useState, useEffect } from 'react';
@@ -8,28 +9,29 @@ import * as SplashScreen from 'expo-splash-screen';
 import { FontSizeProvider, useFontSize } from './context/fontSizeContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Import screens
+// Import screens used in the app
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import NoteScreen from './screens/NoteScreen';
 import AboutScreen from './screens/AboutScreen';
 import SettingsScreen from './screens/SettingsScreen';
 
-const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
+// Create navigators for stack and tab navigation
+const Stack = createNativeStackNavigator(); // Stack navigator for authentication and main app
+const Tab = createBottomTabNavigator(); // Bottom tab navigator for main app screens
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
-// Bottom tabs after login
+// Function to render the bottom tab navigator with dynamic font size after login
 function MainTabs() {
   const { fontSize } = useFontSize(); // Use the context value for font size
-  const tabFontSize = fontSize === 'big' ? 20 : 16;
+  const tabFontSize = fontSize === 'big' ? 20 : 16; // Determine tab font size based on context
 
   console.log('Current fontSize:', fontSize); // Debug log to check if context is working
 
   return (
-    <Tab.Navigator key={fontSize} // ADD THIS - forces remount when fontSize changes
+    <Tab.Navigator key={fontSize} // Force re-render when fontSize changes
       screenOptions={{
         tabBarLabelStyle: {
           fontSize: tabFontSize,  // Adjust font size based on context
@@ -37,12 +39,13 @@ function MainTabs() {
           marginBottom: 5,
         },
         tabBarStyle: {
-          height: 100,  // Tab bar height
-          paddingBottom: 5,
+          height: 100,  // Set tab bar height
+          paddingBottom: 5, // Padding at the bottom
         },
-        tabBarActiveTintColor: '#007AFF',  // Active tab color
-        tabBarInactiveTintColor: '#999',   // Inactive tab color
+        tabBarActiveTintColor: '#007AFF',  // Set active tab color
+        tabBarInactiveTintColor: '#999',   // Set inactive tab color
       }}>
+      {/* Tabs for Notes, About, and Settings screens */}
       <Tab.Screen name="Notes" component={NoteScreen} options={{
         tabBarIcon: ({ focused, color }) => (
           <Text>
@@ -68,10 +71,11 @@ function MainTabs() {
   );
 }
 
+// Main App component
 export default function App() {
-  const [appIsReady, setAppIsReady] = useState(false);
+  const [appIsReady, setAppIsReady] = useState(false); // State to track if the app is ready
 
-
+  // Prepare the app (e.g., load resources) before rendering
   useEffect(() => {
     async function prepare() {
       try {
@@ -82,36 +86,39 @@ export default function App() {
         // await loadFonts();
         // await loadData();
       } catch (e) {
+        // Log any errors encountered during preparation
         console.warn(e);
       } finally {
-        // Tell the application to render
+        // Set appIsReady to true to indicate readiness
         setAppIsReady(true);
       }
     }
 
-    prepare();
+    prepare(); // Call the prepare function to load resources
   }, []);
 
+  // Hide the splash screen once the app is ready
   useEffect(() => {
     async function hideSplash() {
       if (appIsReady) {
-        // Hide the splash screen
+        // Hide the splash screen after resources are ready
         await SplashScreen.hideAsync();
       }
     }
 
-    hideSplash();
+    hideSplash(); // Call the function to hide splash screen
   }, [appIsReady]);
 
   if (!appIsReady) {
     return null; // Show nothing while splash screen is visible
   }
 
-
-
   return (
+    // FontSizeProvider context provider to manage font size across the app
     <FontSizeProvider>
+      {/* Navigation container to manage all navigation state */}
       <NavigationContainer >
+        {/* Stack Navigator to manage the stack of screens */}
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {/* Auth screens come first */}
           <Stack.Screen name="Login" component={LoginScreen} />
@@ -124,6 +131,7 @@ export default function App() {
   );
 }
 
+// Styles for the app
 const styles = StyleSheet.create({
   container: {
     flex: 1,
